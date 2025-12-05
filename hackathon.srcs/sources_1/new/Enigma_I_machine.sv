@@ -5,7 +5,7 @@ module Enigma_I_machine(
     
     input   logic   [1:0]   rotor_cfg_i     ,
     input   logic           index_i_valid   ,
-    input   logic   [7:0]   index_i         ,
+    input   logic   [4:0]   index_i         ,
     output  logic   [4:0]   index_o 
     );
     
@@ -40,8 +40,11 @@ module Enigma_I_machine(
                                       
     logic           occupied_err_wire       ;  
                                       
-    logic   [4:0]   current_index_wire      ; 
-    logic   [4:0]   transposed_index_wire   ;
+    logic   [4:0]   current_index_wire1      ; 
+    logic   [4:0]   transposed_index_wire1   ;
+    
+    logic   [4:0]   current_index_wire2      ; 
+    logic   [4:0]   transposed_index_wire2   ;
     
     //rotor1 declarations
     logic   [4:0]   index1_r1_wire_i    ;
@@ -198,8 +201,22 @@ module Enigma_I_machine(
                        
     .occupied_err      (occupied_err_wire    ),   //occupied err flag
                                             
-    .current_index_i   (current_index_wire   ),  //this is index of current letter
-    .transposed_index_o(transposed_index_wire)   //this is transposed letter output
+    .current_index_i   (current_index_wire1   ),  //this is index of current letter
+    .transposed_index_o(transposed_index_wire1)   //this is transposed letter output
+    );
+    
+    plugboard plugboard_1(
+    .rstn(rstn),
+    .clk(clk) ,
+    
+    .we_i              (we_wire              ),
+    .index_switch1_i   (index_switch1_wire   ),
+    .index_switch2_i   (index_switch2_wire   ),       
+                       
+    .occupied_err      (),   //occupied err flag
+                                            
+    .current_index_i   (current_index_wire2   ),  //this is index of current letter
+    .transposed_index_o(transposed_index_wire2)   //this is transposed letter output
     );
     
     rotor1 rotor1_inst0(
@@ -276,7 +293,16 @@ module Enigma_I_machine(
     
     assign  offset_r1_wire_i = cnt1;
     
+    assign  current_index_wire1 = index_i;
+    assign  index1_r3_wire_i = transposed_index_wire1;
+    assign  index1_r2_wire_i = index1_r3_wire_o;
+    assign  index1_r1_wire_i = index1_r2_wire_o;
+    assign  reflcetor_index_i = index1_r1_wire_o;
+    assign  index2_r1_wire_i = reflector_index_o;
+    assign  index2_r2_wire_i = index2_r1_wire_o;
+    assign  index2_r3_wire_i = index2_r2_wire_o;
+    assign  current_index_wire2 = index2_r3_wire_o;  
     
-    
+    assign  index_o = transposed_index_wire2;
     
 endmodule
