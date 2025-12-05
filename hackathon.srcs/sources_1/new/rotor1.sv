@@ -83,10 +83,15 @@ module rotor1(
         
     end
     
-    assign index1_calc_wire = (index1_i + offset_i <= 25) ? (index1_i + offset_i) : (index1_i + offset_i - 25);
-    assign index1_o = (memory1[index1_calc_wire] - offset_i <= 25) ? (memory1[index1_calc_wire] - offset_i) : (memory1[index1_calc_wire] - offset_i - 25);
+    logic [4:0] index1_mapped;
+    logic [4:0] index2_mapped;
     
-    assign index2_calc_wire = (index2_i + offset_i <= 25) ? (index2_i + offset_i) : (index2_i + offset_i - 25);
-    assign index2_o = (memory2[index2_calc_wire] - offset_i <= 25) ? (memory2[index2_calc_wire] - offset_i) : (memory2[index2_calc_wire] - offset_i - 25);
+    assign index1_calc_wire = (index1_i + offset_i) % 26;
+    assign index1_mapped = memory1[index1_calc_wire];
+    assign index1_o = (index1_mapped < offset_i) ? (26 + (index1_mapped - offset_i)) : (index1_mapped - offset_i);
+    
+    assign index2_calc_wire = (index2_i + offset_i) % 26;
+    assign index2_mapped = memory2[index2_calc_wire];
+    assign index2_o = (index2_mapped < offset_i) ? (26 + (index2_mapped - offset_i)) : (index2_mapped - offset_i);
     
 endmodule
