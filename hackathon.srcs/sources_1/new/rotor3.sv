@@ -1,5 +1,5 @@
 
-module rotor2(
+module rotor3(
     input   logic   [4:0]   index1_i    ,
     input   logic   [4:0]   index2_i    ,   
     input   logic   [4:0]   offset_i    ,   //rotor shift
